@@ -6,31 +6,32 @@ using System.Text;
 
     static class Ciphers
     {
-        public static char[,] RosaceCipher(char[,] matrix, int rowchange, int colchange, bool clock)
-        {
-            if (clock)
-            {
-                //Clocwise
-                char reserve = matrix[2 + rowchange, 2 + colchange]; //Stpck 1
-                matrix[2 + rowchange, 2 + colchange] = matrix[2 - colchange, 2 + rowchange]; //4 va dans 1
-                matrix[2 - colchange, 2 + rowchange] = matrix[2 - rowchange, 2 - colchange]; //3 va dans 4
-                matrix[2 - rowchange, 2 - colchange] = matrix[2 + colchange, 2 - rowchange]; //2 va dans 3
-                matrix[2 + colchange, 2 - rowchange] = reserve; //Reserve dans 2
-            }
-            else
-            {
-                //Counter
-                char reserve = matrix[2 + rowchange, 2 + colchange];
-                matrix[2 + rowchange, 2 + colchange] = matrix[2 + colchange, 2 - rowchange];
-                matrix[2 + colchange, 2 - rowchange] = matrix[2 - rowchange, 2 - colchange];
-                matrix[2 - rowchange, 2 - colchange] = matrix[2 - colchange, 2 + rowchange];
-                matrix[2 - colchange, 2 + rowchange] = reserve;
-            }
+    public static char[,] RosaceCipher(char[,] matrix, int rowchange, int colchange, bool clock)
+    {
 
-            return matrix;
+        if (clock)
+        {
+            //Clocwise
+            char reserve = matrix[(2 + rowchange) % 5, (2 + colchange) % 5]; //Stpck 1
+            matrix[(2 + rowchange) % 5, (2 + colchange) % 5] = matrix[(2 - colchange) % 5, (2 + rowchange) % 5]; //4 va dans 1
+            matrix[(2 - colchange) % 5, (2 + rowchange) % 5] = matrix[(2 - rowchange) % 5, (2 - colchange) % 5]; //3 va dans 4
+            matrix[(2 - rowchange) % 5, (2 - colchange) % 5] = matrix[(2 + colchange) % 5, (2 - rowchange) % 5]; //(2 va dans 3
+            matrix[(2 + colchange) % 5, (2 - rowchange) % 5] = reserve; //Reserve dans (2
+        }
+        else
+        {
+            //Counter
+            char reserve = matrix[(2 + rowchange) % 5, (2 + colchange) % 5];
+            matrix[(2 + rowchange) % 5, (2 + colchange) % 5] = matrix[(2 + colchange) % 5, (2 - rowchange) % 5];
+            matrix[(2 + colchange) % 5, (2 - rowchange) % 5] = matrix[(2 - rowchange) % 5, (2 - colchange) % 5];
+            matrix[(2 - rowchange) % 5, (2 - colchange) % 5] = matrix[(2 - colchange) % 5, (2 + rowchange) % 5];
+            matrix[(2 - colchange) % 5, (2 + rowchange) % 5] = reserve;
         }
 
-        public static char[,] VitrailCipher(char[,] matrix, int colstart, int colend, int overflow)
+        return matrix;
+    }
+
+    public static char[,] VitrailCipher(char[,] matrix, int colstart, int colend, int overflow)
         {
             if (colstart == colend) throw new ArgumentException();
             Queue<char> queuein = new Queue<char>();

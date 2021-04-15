@@ -44,7 +44,7 @@ public class notreDameCipherScript : ModuleScript {
 		endingWord = displayTexts[0, 3] = WordList.wl[RNG.Range(0, WordList.wl.Length)];
 		ShowPage();
 		InitiateMatrix();
-		ShowMatrix("Starting");
+		
 		RosaceSetup();
 		VitrailSetup();
 		CrossSetup();
@@ -105,7 +105,8 @@ public class notreDameCipherScript : ModuleScript {
 				letter++;
             }
         }
-    }
+		ShowMatrix("Starting");
+	}
 
 	private void RosaceSetup()
     {
@@ -119,7 +120,7 @@ public class notreDameCipherScript : ModuleScript {
 			displayTexts[1, i + 1] += (char)(col + 'A');
 			displayTexts[1, i + 1] += row+1;
 			displayTexts[1, i + 1] += isClockwise ? '>' : '<';
-			matrix = RosaceCipher(matrix, row - 2, col - 2, isClockwise);
+			matrix = Ciphers.RosaceCipher(matrix, row - 2, col - 2, isClockwise);
 			Log("Display is {0}".Form(displayTexts[1, i + 1]));
 			ShowMatrix();
 		}
@@ -171,16 +172,20 @@ public class notreDameCipherScript : ModuleScript {
         {
 			if (matrix[i / 5, i % 5] == endingWord[answerStep])
 			{
+				PlaySound("Burn");
+				Log("You pressed {0} in row {1} column {2}, which is correct.".Form(matrix[i / 5, i % 5], (i / 5) + 1, (i % 5) + 1));
 				AnswerButtonsMat[i].material = TilesMat[1];
 				if (++answerStep == 5)
 				{
 					Solve("Module solved!");
+					PlaySound("Solve");
 					ChangeAllSubmissionTiles(1);
 				}
 			}
 			else
 			{
-				Strike("That's not it...");
+				Strike("You pressed {0} when {1} was expected... Strike!".Form(matrix[i / 5, i % 5],endingWord[answerStep]));
+				PlaySound("Strike");
 			}
 		}
 
@@ -194,33 +199,5 @@ public class notreDameCipherScript : ModuleScript {
         }
     }
 
-	public char[,] RosaceCipher(char[,] matrix, int rowchange, int colchange, bool clock)
-	{
-		Log("{0} {1}".Form(matrix.GetLength(0),matrix.GetLength(1)));
-		if (clock)
-		{
-			//Clocwise
-			Log("{0} {1}",2 + rowchange, 2 + colchange);
-			char reserve = matrix[2 + rowchange, 2 + colchange]; //Stpck 1
-			Log("{0} {1}", 2 - colchange, 2 + rowchange);
-			matrix[2 + rowchange, 2 + colchange] = matrix[2 - colchange, 2 + rowchange]; //4 va dans 1
-			Log("{0} {1}", 2 - rowchange, 2 - colchange);
-			matrix[2 - colchange, 2 + rowchange] = matrix[2 - rowchange, 2 - colchange]; //3 va dans 4
-			Log("{0} {1}", 2 + colchange, 2 - rowchange);
-			matrix[2 - rowchange, 2 - colchange] = matrix[2 + colchange, 2 - rowchange]; //2 va dans 3
-			matrix[2 + colchange, 2 - rowchange] = reserve; //Reserve dans 2
-		}
-		else
-		{
-			//Counter
-			char reserve = matrix[2 + rowchange, 2 + colchange];
-			matrix[2 + rowchange, 2 + colchange] = matrix[2 + colchange, 2 - rowchange];
-			matrix[2 + colchange, 2 - rowchange] = matrix[2 - rowchange, 2 - colchange];
-			matrix[2 - rowchange, 2 - colchange] = matrix[2 - colchange, 2 + rowchange];
-			matrix[2 - colchange, 2 + rowchange] = reserve;
-		}
-
-		return matrix;
-	}
 }
 
