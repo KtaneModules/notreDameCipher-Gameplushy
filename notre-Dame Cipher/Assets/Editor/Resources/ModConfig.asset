@@ -14,7 +14,13 @@ MonoBehaviour:
   id: notreDameCipher
   title: Notre-Dame Cipher
   author: Konoko
-  description: 
+  description: 'And we''re gonna let it burn, burn, burn, burn...
+
+
+    Notre-Dame Cipher made by Konoko
+
+
+    In case of any bug, please contact me on the KTaNE Discord.'
   version: 1.0
   outputFolder: build
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 2800000, guid: f295068141520174c929c314206e8b05, type: 3}
