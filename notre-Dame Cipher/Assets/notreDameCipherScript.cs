@@ -44,11 +44,11 @@ public class notreDameCipherScript : ModuleScript {
 		endingWord = displayTexts[0, 3] = WordList.wl[RNG.Range(0, WordList.wl.Length)];
 		ShowPage();
 		InitiateMatrix();
-		
 		RosaceSetup();
 		VitrailSetup();
 		CrossSetup();
 		ShowMatrix("Final");
+		Log("Your final word is : {0}".Form(endingWord));
 		AnswerButtons.Assign(onInteract: SubmitAttempt);
 	}
 
@@ -106,6 +106,7 @@ public class notreDameCipherScript : ModuleScript {
             }
         }
 		ShowMatrix("Starting");
+		Log("Your starting word is : {0}".Form(startingWord));
 	}
 
 	private void RosaceSetup()
