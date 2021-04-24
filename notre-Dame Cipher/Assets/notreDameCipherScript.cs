@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
 using System;
@@ -200,5 +201,80 @@ public class notreDameCipherScript : ModuleScript {
         }
     }
 
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Use [!{0} right/left] to press that arrow. Use [!{0} cycle] to cycle through all 4 screens. Use [!{0} submit C1 B2 E3 A2 A2] to navigate to the submit menu and press those coordinates.";
+#pragma warning restore 414
+
+    private IEnumerator ProcessTwitchCommand (string input)
+    {
+        string command = input.Trim().ToUpperInvariant();
+        List<string> parameters = command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        string[] directions = new string[] { "LEFT", "PREV", "PREVIOUS", "RIGHT", "NEXT" };
+        string[] coordinates = new string[] { "A1", "B1", "C1", "D1", "E1", "A2", "B2", "C2", "D2", "E2", "A3", "B3", "C3", "D3", "E3", "A4", "B4", "C4", "D4", "E4", "A5", "B5", "C5", "D5", "E5", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25" };
+                                                                                                                                                                                                    //Optionally allows 1-based numerical indices
+        if (directions.Contains(command))
+        {
+            yield return null;
+            if (Modes[1].activeSelf)
+            {
+                Buttons[1].OnInteract();
+                yield return new WaitForSeconds(0.5f);
+            }
+            ((Array.IndexOf(directions, command) < 3) ? Arrows[0] : Arrows[1]) .OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        else if (command == "CYCLE")
+        {
+            yield return null;
+            if (Modes[1].activeSelf)
+            {
+                Buttons[1].OnInteract();
+                yield return new WaitForSeconds(0.5f);
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                Arrows[1].OnInteract();
+                yield return "trycancel";
+                yield return new WaitForSeconds(5);
+            }
+        }
+        else if (Regex.IsMatch(command, @"SUBMIT(\s+[A-E][1-5])+", RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (Modes[0].activeSelf)
+            {
+                Buttons[0].OnInteract();
+                yield return new WaitForSeconds(0.65f);
+            }
+            parameters.Remove("SUBMIT");
+            foreach (string coord in parameters)
+            {
+                AnswerButtons[Array.IndexOf(coordinates, coord) % 25].OnInteract();
+                yield return new WaitForSeconds(0.65f);
+            }
+        }
+    }
+
+    private IEnumerator TwitchHandleForcedSolve ()
+    {
+        while (!IsSolved)
+        {
+            if (Modes[0].activeSelf)
+            {
+                Buttons[0].OnInteract();
+                yield return new WaitForSeconds(0.65f);
+            }
+            for (int i = 0; i < 25; i++)
+            {
+                if (matrix[i / 5, i % 5] == endingWord[answerStep])
+                {
+                    AnswerButtons[i].OnInteract();
+                    yield return new WaitForSeconds(0.65f);
+                    break;
+                }
+            }
+            yield return null;
+        }
+    }
 }
 
