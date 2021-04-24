@@ -238,7 +238,7 @@ public class notreDameCipherScript : ModuleScript {
                 yield return new WaitForSeconds(5);
             }
         }
-        else if (Regex.IsMatch(command, @"SUBMIT(\s+[A-E][1-5])+", RegexOptions.CultureInvariant))
+        else if (Regex.IsMatch(command, @"SUBMIT(\s+[A-E][1-5])*", RegexOptions.CultureInvariant))
         {
             yield return null;
             if (Modes[0].activeSelf)
@@ -252,6 +252,15 @@ public class notreDameCipherScript : ModuleScript {
                 AnswerButtons[Array.IndexOf(coordinates, coord) % 25].OnInteract();
                 yield return new WaitForSeconds(0.65f);
             }
+        }
+		else if (command == "CANCEL")
+        {
+			yield return null;
+            if (Modes[1].activeSelf)
+            {
+				Buttons[1].OnInteract();
+				yield return new WaitForSeconds(0.5f);
+			}
         }
     }
 
