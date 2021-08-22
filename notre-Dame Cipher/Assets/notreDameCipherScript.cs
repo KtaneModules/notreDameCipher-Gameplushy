@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
 using System;
-using KeepCodingAndNobodyExplodes;
+using KeepCoding;
 using RNG = UnityEngine.Random;
 
 public class notreDameCipherScript : ModuleScript {
@@ -37,7 +37,7 @@ public class notreDameCipherScript : ModuleScript {
 		};
 	}
 
-	protected override void OnActivate()
+	public override void OnActivate()
 	{
 		Arrows.Assign(onInteract: SwapPage);
 		Buttons.Assign(onInteract: ChangePhase);
@@ -202,7 +202,7 @@ public class notreDameCipherScript : ModuleScript {
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use [!{0} right/left] to press that arrow. Use [!{0} cycle] to cycle through all 4 screens. Use [!{0} submit C1 B2 E3 A2 A2] to navigate to the submit menu and press those coordinates.";
+    private readonly string TwitchHelpMessage = @"Use [!{0} right/left] to press that arrow. Use [!{0} cycle] to cycle through all 4 screens. Use [!{0} submit C1 B2 E3 A2 A2] to navigate to the submit menu and press those coordinates. Use [!{0} cancel] to go exit submission phase and go back to page 1.";
 #pragma warning restore 414
 
     private IEnumerator ProcessTwitchCommand (string input)
@@ -244,13 +244,13 @@ public class notreDameCipherScript : ModuleScript {
             if (Modes[0].activeSelf)
             {
                 Buttons[0].OnInteract();
-                yield return new WaitForSeconds(0.65f);
+                yield return new WaitForSeconds(0.25f);
             }
             parameters.Remove("SUBMIT");
             foreach (string coord in parameters)
             {
                 AnswerButtons[Array.IndexOf(coordinates, coord) % 25].OnInteract();
-                yield return new WaitForSeconds(0.65f);
+                yield return new WaitForSeconds(0.33f);
             }
         }
 		else if (command == "CANCEL")
