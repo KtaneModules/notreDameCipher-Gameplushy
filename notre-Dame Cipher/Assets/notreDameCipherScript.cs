@@ -238,7 +238,7 @@ public class notreDameCipherScript : ModuleScript {
                 yield return new WaitForSeconds(5);
             }
         }
-        else if (Regex.IsMatch(command, @"SUBMIT(\s+[A-E][1-5])*", RegexOptions.CultureInvariant))
+        else if (Regex.IsMatch(command, @"^SUBMIT(\s+[A-E][1-5])+$", RegexOptions.CultureInvariant))
         {
             yield return null;
             if (Modes[0].activeSelf)
