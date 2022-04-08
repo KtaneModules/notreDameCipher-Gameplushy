@@ -80,6 +80,7 @@ public class notreDameCipherScript : ModuleScript {
 	private void ChangePhase(int i)
     {
 		ButtonEffect(Buttons[i], 1, KMSoundOverride.SoundEffect.ButtonPress);
+		if (IsSolved) return;
         if (i == 1)
         {
 			answerStep = 0;
